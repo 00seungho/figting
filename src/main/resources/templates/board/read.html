@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>처리 페이지</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <form action="/board/modify" method="post">
+            <input type="hidden" name="page" th:value="${requestDTO.page}">
+            <input type="hidden" name="type" th:value="${requestDTO.type}">
+            <input type="hidden" name="keyword" th:value="${requestDTO.keyword}">
+            <input type="hidden" name="processed" id="processedValue" value="${dto.processed}" />
+        </form>
+        <div class="container mt-4">
+            <h1 class="mb-4">처리 페이지</h1>
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>번호</label>
+                        <input type="text" name="bno" class="form-control" th:value="${dto.bno}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>제목</label>
+                        <input type="text" name="title" class="form-control" th:value="${dto.title}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>민원 내용</label>
+                        <div class="form-control" style="height: 150px; overflow-y: auto;">
+                            <p th:text="${dto.content}"></p> <!-- 내용 표시 -->
+                            <img th:src="${dto.picPath}" alt="게시물 이미지" class="img-fluid" style="max-height: 100%; width: auto;" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>작성자</label>
+                        <input type="text" name="writerName" class="form-control" th:value="${dto.writerName}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>작성날짜</label>
+                        <input type="text" name="regDate" class="form-control" th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>처리날짜</label>
+                        <input type="text" name="modDate" class="form-control" th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>처리여부</label>
+                        <div>
+
+                            <button type="button" class="btn btn-success successBtn" th:disabled="${dto.processed}">완료</button>
+                            <button type="button" class="btn btn-warning warningBtn"  th:disabled="${!dto.processed}">대기중</button>
+                            <button type="button" class="btn btn-danger removeBtn">민원삭제</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <a th:href="@{/board/list(page=${requestDTO.page}, type=${requestDTO.type}, keyword=${requestDTO.keyword})}" class="btn btn-info">민원 게시판 돌아가기</a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </th:block>
+</th:block>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        let actionForm = $("form");
+        $(".removeBtn").click(function () {
+            actionForm.attr("action", "/board/remove")
+                .attr("method", "post")
+                .submit()
+        });
+
+        $(".warningBtn").click(function () {
+            // processed 값을 false로 설정
+            $("#processedValue").val(false);
+            // 폼 제출
+            $("#actionForm").attr("action", "/board/modify")
+                .attr("method", "post")
+                .submit();
+        });
+
+        $(".successBtn").click(function () {
+            // processed 값을 true로 설정
+            $("#processedValue").val(true);
+            // 폼 제출
+            $("#actionForm").attr("action", "/board/modify")
+                .attr("method", "post")
+                .submit();
+        });
+
+        $(".listBtn").click(function () {
+            var page = $("input[name='page']");
+            var type = $("input[name='type']");
+            var keyword = $("input[name='keyword']");
+
+            actionForm.empty();
+
+            actionForm.append(page);
+            actionForm.append(type);
+            actionForm.append(keyword);
+
+            actionForm.attr("action", "/board/list")
+                .attr("method", "get")
+                .submit()
+        })
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
