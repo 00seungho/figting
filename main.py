@@ -7,10 +7,10 @@ from dotenv import load_dotenv
 from otherEngine import kakaoSearchEngine
 from otherEngine import objectDetectionEngine
 from otherEngine import makeContentEngine
-from PIL import Image, ImageDraw,ImageFont
-import io
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # 모든 도메인에서 접근을 허용
 load_dotenv()
 # 클라이언트 요청을 전달할 타겟 서버 URL
 TARGET_URL = os.getenv("endpoint")
