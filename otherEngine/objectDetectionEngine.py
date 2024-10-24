@@ -78,6 +78,7 @@ class ObjectDetectionEngine():
 
                 draw.rectangle([left, top, right, bottom], outline="red", width=2)  # 빨간색 박스
             byte_io = io.BytesIO()
+            print(4)
             image.save(byte_io, format='JPEG')
             print(3)
             byte_io.seek(0)
