@@ -41,7 +41,7 @@ public class RestServiceImpl implements RestService{
 
         // 파일을 업로드 디렉토리에 저장
         File destinationFile = new File(uploadDir, fileName);
-        String relativePath = "/uploads/" + fileName;
+        String relativePath = "uploads/" + fileName;
         try (FileOutputStream fos = new FileOutputStream(destinationFile)) {
             fos.write(imageBytes); // 디코딩된 이미지를 파일로 저장
         } catch (IOException e) {
