@@ -5,7 +5,6 @@ import aikopo.ac.kr.fighting.dto.BoardDTO;
 import aikopo.ac.kr.fighting.dto.PageRequestDTO;
 import aikopo.ac.kr.fighting.service.BoardService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +22,7 @@ public class FightingController {
     private final BoardService boardService;
 
     @GetMapping("/")
-    public String main(){
+    public String fightingMain(){
 
         return "redirect:/fighting/list";
     }
