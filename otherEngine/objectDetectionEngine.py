@@ -84,4 +84,4 @@ class ObjectDetectionEngine():
                 "predictions": filtered_predictions
                     }
         except Exception as e:
-            return {"error":"ObjectEngine error", "msg":"Please ask the administrator."}
+            return {"error":"ObjectEngine error", "msg":f"Please ask the administrator. {e}"}
