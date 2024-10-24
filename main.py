@@ -33,9 +33,10 @@ def proxy():
             longitude = request.headers.get("longitude")
             latitude = request.headers.get("latitude")
             phoneNumber = request.headers.get("phoneNumber")
-            dataTime = request.headers.get("dataTime")
-            print(longitude)
-            print(latitude)
+            dataTime = request.headers.get("dateTime")
+
+            # print(longitude)
+            # print(latitude)
             map = KakaoSearchEngine.search(longitude=longitude,latitude=latitude)
             byteimg = request.get_data()
             byteimg_resize = ObjectDetectionEngine.compress_image_to_target_size(byteimg)
