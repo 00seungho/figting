@@ -1,7 +1,6 @@
 package kr.ac.kopo.reportservice;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -14,30 +13,29 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnSend = findViewById(R.id.btnSend);
 
         btnCamera.setOnClickListener(v -> openCamera());
-        btnSend.setOnClickListener(v -> sendData());
+        btnSend.setOnClickListener(v -> getCurrentLocationAndSendData(imageUri));
 
         btnGallery.setOnClickListener(view -> {
             Intent intent = new Intent();
@@ -116,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (allGranted) {
-                getCurrentLocationAndSendData();
+                getCurrentLocationAndSendData(imageUri);
             } else {
                 handlePermissionDenial();
             }
@@ -175,8 +173,13 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             imageView.setImageURI(imageUri);
         } else if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
-            Uri selectedImage = data.getData();
-            imageView.setImageURI(selectedImage);
+            if (data != null && data.getData() != null) {
+                imageUri = data.getData();  // URI를 저장
+                imageView.setImageURI(imageUri);  // ImageView에 설정
+                extractLocationFromImage(imageUri);  // URI를 전달하여 이미지에서 위치 정보 추출
+            } else {
+                Log.e("MainActivity", "Received null data or uri");
+            }
         }
     }
 
@@ -222,11 +225,57 @@ public class MainActivity extends AppCompatActivity {
         return telephonyManager.getLine1Number();
     }
 
-    private void sendData() {
-        getCurrentLocationAndSendData();
+    private double[] extractLocationFromImage(Uri imageUri) {
+        double[] latLong = new double[]{0, 0};  // 기본값 설정
+
+        if (imageUri == null) {
+            Log.e("extractLocationFromImage", "Image Uri is null");
+            return latLong;  // 위치 정보를 추출할 수 없을 경우 기본값 반환
+        }
+
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            ExifInterface exif = new ExifInterface(inputStream);
+
+            float[] latLongFloat = new float[2];
+            if (exif.getLatLong(latLongFloat)) {
+                latLong[0] = latLongFloat[0];  // 위도
+                latLong[1] = latLongFloat[1];  // 경도
+            } else {
+                Log.d("extractLocationFromImage", "No EXIF location data found");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("extractLocationFromImage", "Failed to extract location from image: " + e.getMessage());
+        }
+
+        return latLong;
     }
 
-    private void getCurrentLocationAndSendData() {
+    private String extractDateTimeFromImage(Uri imageUri) {
+        String dateTime = null;
+        try {
+            // EXIF 데이터 읽기
+            ExifInterface exif = new ExifInterface(getContentResolver().openInputStream(imageUri));
+
+            // 촬영일시 추출
+            dateTime = exif.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+            if (dateTime == null) {
+                dateTime = exif.getAttribute(ExifInterface.TAG_DATETIME); // 대체로 사용될 수 있는 다른 태그
+            }
+
+            if (dateTime != null) {
+                Log.d("DateTime", "촬영일시: " + dateTime);
+            } else {
+                showErrorDialog("촬영일시 정보가 EXIF 데이터에 없습니다.");
+            }
+        } catch (IOException e) {
+            showErrorDialog("EXIF 데이터 읽기 실패: " + e.getMessage());
+        }
+        return dateTime;
+    }
+
+    private void getCurrentLocationAndSendData(Uri imageUri) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -234,19 +283,44 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // 이미지에서 위치 및 날짜 정보 추출
+        double[] extractedLocation = extractLocationFromImage(imageUri);
+        final String[] extractedDateTime = {extractDateTimeFromImage(imageUri)};
+        Log.d("image location", Arrays.toString(extractedLocation));
+        Log.d("image Datetime", extractedDateTime[0]);
+
+        // 현재 위치 가져오기
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, location -> {
-                    if (location != null) {
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                        sendDataToServer();
+                    double latitude;
+                    double longitude;
+
+                    if (extractedLocation[0] != 0 && extractedLocation[1] != 0) {
+                        // 추출된 위치 사용
+                        latitude = extractedLocation[0];
+                        longitude = extractedLocation[1];
                     } else {
-                        showErrorDialog("위치 정보를 가져올 수 없습니다.");
+                        // 유효한 EXIF 위치 정보가 없을 경우 현재 위치 사용
+                        if (location != null) {
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                        } else {
+                            showErrorDialog("위치 정보를 가져올 수 없습니다.");
+                            return;
+                        }
                     }
+
+                    // 날짜 정보가 없을 경우 현재 날짜 사용
+                    if (extractedDateTime[0] == null) {
+                        extractedDateTime[0] = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.getDefault()).format(new Date());
+                    }
+
+                    // 데이터 서버로 전송
+                    sendDataToServer(latitude, longitude, extractedDateTime[0], imageUri);
                 });
     }
 
-    private void sendDataToServer() {
+    private void sendDataToServer(double latitude, double longitude, String dateTime, Uri imageUri) {
         // 이미지 데이터를 바이트 배열로 가져오기
         byte[] imageBytes;
         try {
@@ -254,7 +328,6 @@ public class MainActivity extends AppCompatActivity {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
             imageBytes = byteArrayOutputStream.toByteArray();
-            Log.d("imageBytes", Arrays.toString(imageBytes));
         } catch (Exception e) {
             showErrorDialog("이미지 처리 중 오류 발생: " + e.getMessage());
             return;
@@ -263,33 +336,28 @@ public class MainActivity extends AppCompatActivity {
         String phoneNumber = getPhoneNumber();
         Log.d("PhoneNumber", phoneNumber);
 
-        // JSON 데이터 생성
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("phoneNumber", phoneNumber);
-            Log.d("JSONData", jsonObject.toString());
-        } catch (JSONException e) {
-            showErrorDialog("JSON 객체 생성 실패");
-            return;
-        }
+        // 전송할 데이터 조합
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("phoneNumber:").append(phoneNumber).append("\n");
+        stringBuilder.append("latitude:").append(latitude).append("\n");
+        stringBuilder.append("longitude:").append(longitude).append("\n");
+        stringBuilder.append("dateTime:").append(dateTime).append("\n");
 
+        // OkHttpClient 설정
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS) // 연결 타임아웃을 30초로 설정
-                .readTimeout(30, TimeUnit.SECONDS)    // 읽기 타임아웃을 30초로 설정
-                .writeTimeout(30, TimeUnit.SECONDS)   // 쓰기 타임아웃을 30초로 설정
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
 
-
-        // RequestBody를 application/octet-stream으로 설정
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), imageBytes);
-
-        // 요청 헤더에 위치 정보 추가
+        // 요청 생성
         Request request = new Request.Builder()
                 .url("http://192.168.24.188:8080/send")
-                .post(requestBody)
+                .addHeader("phoneNumber", phoneNumber)
                 .addHeader("latitude", String.valueOf(latitude))
                 .addHeader("longitude", String.valueOf(longitude))
-                .addHeader("phoneNumber", phoneNumber)
+                .addHeader("dateTime", dateTime)
+                .post(RequestBody.create(MediaType.parse("application/octet-stream"), imageBytes)) // 이미지 데이터 전송
                 .build();
 
         Log.d("request", String.valueOf(request));
