@@ -1,4 +1,3 @@
-from collections import Counter
 from .decodinglist import decodinglist
 import json
 import base64
