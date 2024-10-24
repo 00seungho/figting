@@ -41,9 +41,9 @@ def proxy():
             byteimg = request.get_data()
             byteimg_resize = ObjectDetectionEngine.compress_image_to_target_size(byteimg)
             prediction = ObjectDetectionEngine.post_image(byteimg_resize)
-            print(prediction)
             if (len(prediction["predictions"]) == 0):
                 return jsonify({"notice":"사용자의 사진에서 민원내용을 찾을 수 없습니다."},200)
+            print(map)
             template = makeContentEngine.makeContentEngine(latitude=latitude,
                                                            longitude=longitude,
                                                            phoneNumber=phoneNumber,
