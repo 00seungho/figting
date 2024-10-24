@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 요청 생성
         Request request = new Request.Builder()
-                .url("http://192.168.24.188:8080/send")
+                .url("https://fighting.japaneast.cloudapp.azure.com:7000/send")
                 .addHeader("phoneNumber", phoneNumber)
                 .addHeader("latitude", String.valueOf(latitude))
                 .addHeader("longitude", String.valueOf(longitude))
