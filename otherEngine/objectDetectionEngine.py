@@ -51,8 +51,10 @@ class ObjectDetectionEngine():
         try:
             predictions = response.get("predictions", [])
             image = Image.open(io.BytesIO(byte_image))
+            print(1)
             filtered_predictions = [pred for pred in predictions if pred.get("probability", 0) >= 0.80]
             for filtered_prediction in filtered_predictions:
+                print(2)
                 boundingBox = filtered_prediction["boundingBox"]
                 image_width, image_height = image.size
                 left = int(boundingBox['left'] * image_width)
@@ -77,6 +79,7 @@ class ObjectDetectionEngine():
                 draw.rectangle([left, top, right, bottom], outline="red", width=2)  # 빨간색 박스
             byte_io = io.BytesIO()
             image.save(byte_io, format='JPEG')
+            print(3)
             byte_io.seek(0)
             print(filtered_predictions)
             return {
