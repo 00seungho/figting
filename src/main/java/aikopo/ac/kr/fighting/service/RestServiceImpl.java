@@ -38,6 +38,10 @@ public class RestServiceImpl implements RestService{
         Image tempImage = new Image();
         imageRepository.save(tempImage);
         String fileName = "image_" + tempImage.getId() + ".jpg";
+        File uploadDirectory = new File(uploadDir);
+        if (!uploadDirectory.exists()) {
+            System.out.println(uploadDirectory.mkdirs()); // 폴더 생성
+        }
 
         // 파일을 업로드 디렉토리에 저장
         File destinationFile = new File(uploadDir, fileName);
