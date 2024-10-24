@@ -23,9 +23,10 @@ public class Board extends BaseEntity{
     private Member writer;//Foreign Key  설정(참조무결성 유지)
 
     private Boolean processed;
+
     //    변경된 제목으로 수정
     public void changeProcessed(Boolean processed){
-        this.processed = processed;
+        this.processed = !processed;
     }
 
     //    변경된 내용으로 수정

@@ -17,7 +17,7 @@ public interface BoardService {
 
     public void remove(Long bno);
 
-    void modify(BoardDTO boardDTO);
+    void modify(BoardDTO dto);
 
     //    Entity를 DTO로 변환하는 메소드
     default BoardDTO entityToDTO(Board board, Member member){

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <br>
+        <h5 name="bno">민원번호: [[${dto.bno}]]</h5>
+        <h3 class="mt-4" name="title">[[${dto.title}]]</h3>
+        <br>
+        <div class="form-group">
+            <label>민원 내용:</label>
+            <textarea class="form-control" rows="5" name="content" disabled readonly>[[${dto.content}]]</textarea>
+            <br>
+            <img th:src="@{${dto.picPath}}" alt="게시물 이미지" class="img-fluid" style="max-height: 100%; width: auto;" />
+        </div>
+        <br>
+        <div class="form-group">
+            <label>작성이:</label>
+            <input type="text" class="form-control" name="writerPhone" th:value="${dto.writerPhone}" disabled readonly>
+        </div>
+        <br>
+        <div class="form-group">
+            <label>작성일: </label>
+            <input type="text" name="regDate" class="form-control" th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly disabled>
+        </div>
+        <br>
+        <div class="form-group">
+            <label>처리일: </label>
+            <input type="text" name="modDate" class="form-control"
+                   th:if="${dto.processed}"
+                   th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}"
+                   readonly disabled>
+
+            <input type="text" name="modDate" class="form-control"
+                   th:if="${!dto.processed}"
+                   th:value="대기중"
+                   readonly disabled>
+        </div>
+        <br>
+        <div class="form-group">
+            <label>처리여부:</label>
+            <form action="/fighting/modify" method="post">
+                <input type="hidden" name="bno" th:value="${dto.bno}">
+                <input type="hidden" name="page" th:value="${requestDTO.page}">
+                <input type="hidden" name="type" th:value="${requestDTO.type}">
+                <input type="hidden" name="keyword" th:value="${requestDTO.keyword}">
+                <input type="hidden" name="processed" id="processedValue" th:value="${dto.processed}">
+
+                <button type="button" th:if="${dto.processed}" class="btn btn-success successBtn">완료</button>
+                <button type="submit" class="btn btn-warning modifyBtn" th:if="${!dto.processed}">대기중</button>
+            </form>
+            <br>
+            <div>
+                <button type="button" class="btn btn-danger removeBtn">민원삭제</button>
+            </div>
+        </div>
+        <br>
+        <div class="form-group">
+            <a th:href="@{/fighting/list(page = ${requestDTO.page}, type=${requestDTO.type},
+                            keyword=${requestDTO.keyword})}">
+                <button type="button" class="btn btn-info form-group text-white">민원 게시판으로 돌아가기</button>
+            </a>
+        </div>
+        <br>
+        <br>
+    </th:block>
+</th:block>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        let actionForm = $("form");
+        $(".removeBtn").click(function () {
+            actionForm.attr("action", "/fighting/remove")
+                .attr("method", "post")
+                .submit()
+        });
+
+
+    });
+</script>
+
+</html>

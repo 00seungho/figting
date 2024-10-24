@@ -31,13 +31,13 @@ public class BoardServiceImpl implements BoardService{
 
         Function<Object[], BoardDTO> fn = (en -> entityToDTO((Board) en[0], (Member) en[1]));
 
-        Page<Object[]> result = repository.searchPage(pageRequestDTO.getType(), pageRequestDTO.getKeyword(),pageRequestDTO.getPageable(Sort.by("bno").descending()));
+        Page<Object[]> result = repository.searchPage(pageRequestDTO.getType(), pageRequestDTO.getKeyword(),
+                pageRequestDTO.getPageable(Sort.by("bno").descending()));
 
 
         return new PageResultDTO<>(result, fn);
     }
 
-    @Transactional
     @Override
     public void remove(Long bno){
         repository.deleteById(bno);
@@ -52,9 +52,9 @@ public class BoardServiceImpl implements BoardService{
 
     @Transactional
     @Override
-    public void modify(BoardDTO boardDTO) {
-        Board board = repository.getReferenceById(boardDTO.getBno());
-        board.changeProcessed(boardDTO.getProcessed());
+    public void modify(BoardDTO dto) {
+        Board board = repository.getReferenceById(dto.getBno());
+        board.changeProcessed(dto.getProcessed());
         repository.save(board);
     }
 }
