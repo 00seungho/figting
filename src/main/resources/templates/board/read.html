@@ -31,7 +31,7 @@
                         <label>민원 내용</label>
                         <div class="form-control" style="height: 150px; overflow-y: auto;">
                             <p th:text="${dto.content}"></p> <!-- 내용 표시 -->
-                            <img th:src="${dto.picPath}" alt="게시물 이미지" class="img-fluid" style="max-height: 100%; width: auto;" />
+                            <img th:src="@{${dto.picPath}}" alt="게시물 이미지" class="img-fluid" style="max-height: 100%; width: auto;" />
                         </div>
                     </div>
                     <div class="form-group">

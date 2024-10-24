@@ -1,6 +1,6 @@
 package aikopo.ac.kr.fighting.service;
 
-import aikopo.ac.kr.fighting.dto.RestRequestDTO;
+import aikopo.ac.kr.fighting.dto.RestBodyDTO;
 import aikopo.ac.kr.fighting.entity.Board;
 import aikopo.ac.kr.fighting.entity.Image;
 import aikopo.ac.kr.fighting.entity.Member;
@@ -24,13 +24,15 @@ public class RestServiceImpl implements RestService{
     private final ImageRepository imageRepository;
     @Value("${image.upload.dir}") // 이미지 저장 경로를 application.properties에서 가져옴
     private String uploadDir;
-    public String registerMember(RestRequestDTO requestDTO){
+    public String registerMember(RestBodyDTO requestDTO){
         Member member = RestToMember(requestDTO);
         memberRepository.save(member);
         return member.getPhoneNum();
     }
-    public void registerBoard(RestRequestDTO requestDTO, String phoneNumber){
-        String[] parts = requestDTO.getImage().split(",");
+
+    public void registerBoard(RestBodyDTO restbodyDTO, String phoneNumber){
+
+        String[] parts = restbodyDTO.getImage().split(",");
         String imageData = parts[1];
         byte[] imageBytes = Base64.getDecoder().decode(imageData);
         Image tempImage = new Image();
@@ -39,7 +41,7 @@ public class RestServiceImpl implements RestService{
 
         // 파일을 업로드 디렉토리에 저장
         File destinationFile = new File(uploadDir, fileName);
-
+        String relativePath = "/uploads/" + fileName;
         try (FileOutputStream fos = new FileOutputStream(destinationFile)) {
             fos.write(imageBytes); // 디코딩된 이미지를 파일로 저장
         } catch (IOException e) {
@@ -48,13 +50,16 @@ public class RestServiceImpl implements RestService{
         }
 
         Member member = memberRepository.getById(phoneNumber);
+
         Board board = Board.builder()
-                .title(requestDTO.getTitle())
-                .content(requestDTO.getContent())
+                .title(restbodyDTO.getTitle())
+                .content(restbodyDTO.getContent())
                 .processed(false)
-                .picPath(destinationFile.getAbsolutePath())
+                .picPath(relativePath)
                 .writer(member)
                 .build();
+
+
         boardRepository.save(board);
     }
 

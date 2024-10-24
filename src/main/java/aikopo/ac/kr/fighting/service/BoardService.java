@@ -30,6 +30,7 @@ public interface BoardService {
                 .writerPhone(member.getPhoneNum())
                 .writerName(member.getName())
                 .processed(board.getProcessed())
+                .picPath(board.getPicPath())
                 .build();
 
         return boardDTO;

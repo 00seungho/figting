@@ -1,6 +1,6 @@
 package aikopo.ac.kr.fighting.dto;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
 public class RestResponseDTO {
