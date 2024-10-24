@@ -48,7 +48,6 @@ public class RestServiceImpl implements RestService{
             e.printStackTrace(); // 예외 처리: 파일 저장 중 문제가 발생하면 스택 트레이스 출력
             throw new RuntimeException("파일 저장 중 오류가 발생했습니다: " + e.getMessage());
         }
-
         Member member = memberRepository.getById(phoneNumber);
 
         Board board = Board.builder()
