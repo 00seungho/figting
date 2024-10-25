@@ -1,0 +1,21 @@
+name: Deploy to backend Server
+
+on:
+  push:
+    branches: [ backend ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - name: execute remote ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER_NAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            ${{ secrets.SECRETS }} -c 'cd ~/backend/figting/ && git pull && ./gradlew clean build && sudo systemctl restart fighting'
+            

@@ -26,6 +26,12 @@ public class FightingController {
 
         return "redirect:/fighting/list";
     }
+    @GetMapping
+    public String fightingMain2(){
+
+        return "redirect:/fighting/list";
+    }
+
 
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
