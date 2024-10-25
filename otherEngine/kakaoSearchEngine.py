@@ -23,4 +23,5 @@ class kakaoMap():
             region_1depth_name = road_address["region_1depth_name"]
             region_2depth_name = road_address["region_2depth_name"]
             region_3depth_name = road_address["region_3depth_name"]
+            print(f"현재 위치: {address_name}")
         return {"address_name":address_name,"region_1depth_name":region_1depth_name,"region_2depth_name":region_2depth_name,"region_3depth_name":region_3depth_name}

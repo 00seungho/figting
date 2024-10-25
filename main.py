@@ -35,12 +35,11 @@ def proxy():
             phoneNumber = request.headers.get("phoneNumber")
             dataTime = request.headers.get("dateTime")
 
-            # print(longitude)
-            # print(latitude)
             map = KakaoSearchEngine.search(longitude=longitude,latitude=latitude)
             byteimg = request.get_data()
             byteimg_resize = ObjectDetectionEngine.compress_image_to_target_size(byteimg)
             prediction = ObjectDetectionEngine.post_image(byteimg_resize)
+
             if (len(prediction["predictions"]) == 0):
                 return jsonify({"notice":"사용자의 사진에서 민원내용을 찾을 수 없습니다."},200)
             template = makeContentEngine.makeContentEngine(latitude=latitude,
