@@ -18,6 +18,9 @@ public class BoardDTO {
     private String writerName;
     private String picPath;
     private Boolean processed;
+    private String longitude;
+    private String latitude;
     private LocalDateTime regDate;
     private LocalDateTime modDate;
+
 }

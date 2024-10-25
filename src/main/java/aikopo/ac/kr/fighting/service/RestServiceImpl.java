@@ -60,6 +60,8 @@ public class RestServiceImpl implements RestService{
                 .processed(false)
                 .picPath(relativePath)
                 .writer(member)
+                .latitude(restbodyDTO.getLatitude())
+                .longitude(restbodyDTO.getLongitude())
                 .build();
 
 

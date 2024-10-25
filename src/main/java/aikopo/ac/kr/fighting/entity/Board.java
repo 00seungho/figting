@@ -18,7 +18,8 @@ public class Board extends BaseEntity{
     private String title;
     private String content;
     private String picPath;
-
+    private String longitude;
+    private String latitude;
     @ManyToOne(fetch = FetchType.LAZY)
     private Member writer;//Foreign Key  설정(참조무결성 유지)
 

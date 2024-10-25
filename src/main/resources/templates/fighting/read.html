@@ -20,7 +20,12 @@
         </div>
         <br>
         <div class="form-group">
-            <label>작성이:</label>
+            <label>신고위치:</label>
+            <input type="text" class="form-control" name="writerPhone" th:value="${dto.longitude+', '+dto.latitude}" disabled readonly>
+        </div>
+        <br>
+        <div class="form-group">
+            <label>작성자:</label>
             <input type="text" class="form-control" name="writerPhone" th:value="${dto.writerPhone}" disabled readonly>
         </div>
         <br>
