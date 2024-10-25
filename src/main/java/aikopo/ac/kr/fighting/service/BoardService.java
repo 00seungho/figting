@@ -31,8 +31,9 @@ public interface BoardService {
                 .writerName(member.getName())
                 .processed(board.getProcessed())
                 .picPath(board.getPicPath())
+                .latitude(board.getLatitude())
+                .longitude(board.getLongitude())
                 .build();
-
         return boardDTO;
     }
 
@@ -49,6 +50,8 @@ public interface BoardService {
                 .content(dto.getContent())
                 .writer(member)
                 .processed(dto.getProcessed())
+                .longitude(dto.getLongitude())
+                .latitude(dto.getLatitude())
                 .build();
         return board;
     }
