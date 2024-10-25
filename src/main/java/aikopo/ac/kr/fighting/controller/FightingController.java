@@ -26,11 +26,7 @@ public class FightingController {
 
         return "redirect:/fighting/list";
     }
-    @GetMapping
-    public String fightingMain2(){
 
-        return "redirect:/fighting/list";
-    }
 
 
     @GetMapping("/list")
