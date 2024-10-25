@@ -21,8 +21,12 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -319,8 +323,40 @@ public class MainActivity extends AppCompatActivity {
                     sendDataToServer(latitude, longitude, extractedDateTime[0], imageUri);
                 });
     }
+    //로딩바 만드는 함수
+    private void showLoadingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);  // 다른 곳을 눌러도 닫히지 않도록 설정
 
+        // LinearLayout 생성하여 ProgressBar와 TextView를 함께 추가
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);  // 수직 배치
+        layout.setPadding(50, 50, 50, 50);  // 여백 추가
+        layout.setGravity(Gravity.CENTER);  // 가운데 정렬
+
+        // ProgressBar 추가
+        ProgressBar progressBar = new ProgressBar(this);
+        layout.addView(progressBar);  // LinearLayout에 ProgressBar 추가
+
+        // TextView로 "로딩중..." 메시지 추가
+        TextView loadingMessage = new TextView(this);
+        loadingMessage.setText("로딩중...");
+        loadingMessage.setGravity(Gravity.CENTER);  // 텍스트를 가운데 정렬
+        layout.addView(loadingMessage);  // LinearLayout에 TextView 추가
+
+        builder.setView(layout);
+
+        progressDialog = builder.create();
+        progressDialog.show();
+    }
+    //로딩바 숨기는 함수
+    private void hideLoadingDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
     private void sendDataToServer(double latitude, double longitude, String dateTime, Uri imageUri) {
+        showLoadingDialog();
         // 이미지 데이터를 바이트 배열로 가져오기
         byte[] imageBytes;
         try {
@@ -362,22 +398,47 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("request", String.valueOf(request));
 
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//                showErrorDialog("서버 요청 실패: " + e.getMessage());
+//            }
+//
+//            @Override
+//            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//                if (!response.isSuccessful()) {
+//                    showErrorDialog("서버 응답 실패: " + response.code());
+//                } else {
+//                    showSuccessDialog("데이터 전송 성공");
+//                }
+//            }
+//        });
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                showErrorDialog("서버 요청 실패: " + e.getMessage());
+                runOnUiThread(() -> {
+                    hideLoadingDialog();
+                    showErrorDialog("서버 요청 실패: " + e.getMessage());
+                });
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    showErrorDialog("서버 응답 실패: " + response.code());
-                } else {
-                    showSuccessDialog("데이터 전송 성공");
-                }
+                runOnUiThread(() -> {
+                    hideLoadingDialog();
+                    if (!response.isSuccessful()) {
+                        showErrorDialog("서버 응답 실패: " + response.code());
+                    } else {
+                        showSuccessDialog("데이터 전송 성공");
+                    }
+                });
             }
         });
+
+
     }
+    private AlertDialog progressDialog;
+
 
     private void showErrorDialog(String message) {
         runOnUiThread(() -> new AlertDialog.Builder(this)
