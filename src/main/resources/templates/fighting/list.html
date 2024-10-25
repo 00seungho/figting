@@ -98,13 +98,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">알림창</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="$('.modal').hide()"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="$(this).closest('.modal').fadeOut(400)"></button>
             </div>
             <div class="modal-body">
-                <p>[[${dto.bno}]]번 민원이 삭제되었습니다.</p>
+                <p th:text="${msg != null ? msg : 'Modal body text goes here.'}">번 민원이 삭제되었습니다.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="$('.modal').hide()">닫기</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="$(this).closest('.modal').fadeOut(400)">닫기</button>
             </div>
         </div>
     </div>
