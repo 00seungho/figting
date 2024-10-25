@@ -71,8 +71,8 @@ class ObjectDetectionEngine():
                 font = ImageFont.truetype(font_path, font_size)  # 지정된 크기의 폰트 로드
 
                 text = f"{self._decodinglist[tag_name]} {'정확도 ' + f'{probability * 100:.2f}%'}"
-                print(f"감지된 객체: {self._decodinglist[tag_name]}")
-                print(f"정확도: {self._decodinglist[tag_name]}")
+                print(f"감지된 객체: {self._decodinglist[tag_name]}",flush=True)
+                print(f"정확도: {self._decodinglist[tag_name]}",flush=True)
                 text_position = (left, top - font_size - 5)  # 바운딩 박스의 위쪽에 위치
                 draw.text(text_position, text, fill="blue", font=font)  # 텍스트 색상은 파란색
 
