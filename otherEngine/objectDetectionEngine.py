@@ -72,7 +72,7 @@ class ObjectDetectionEngine():
 
                 text = f"{self._decodinglist[tag_name]} {'정확도 ' + f'{probability * 100:.2f}%'}"
                 print(f"감지된 객체: {self._decodinglist[tag_name]}",flush=True)
-                print(f"정확도: f'{probability * 100:.2f}%",flush=True)
+                print(f"정확도: {probability * 100:.2f}%",flush=True)
                 text_position = (left, top - font_size - 5)  # 바운딩 박스의 위쪽에 위치
                 draw.text(text_position, text, fill="blue", font=font)  # 텍스트 색상은 파란색
 
