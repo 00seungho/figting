@@ -101,7 +101,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="$(this).closest('.modal').fadeOut(400)"></button>
             </div>
             <div class="modal-body">
-                <p th:text="${msg != null ? msg : 'Modal body text goes here.'}">번 민원이 삭제되었습니다.</p>
+                <p th:text="${msg != null ? msg+'번 민원이 삭제되었습니다.' : 'Modal body text goes here.'}"></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="$(this).closest('.modal').fadeOut(400)">닫기</button>
