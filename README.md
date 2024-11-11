@@ -12,7 +12,7 @@
 | [나예은](https://github.com/yeeun03030)   | 팀원    | ![Spring Boot](https://img.shields.io/badge/spring--boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white)
  <br> ![Kotlin](https://img.shields.io/badge/kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
  <br> ![Android Studio](https://img.shields.io/badge/android--studio-3DDC84?style=flat-square&logo=android-studio&logoColor=white)
- | 앱 어플리케이션 개발 <br> SpringBoot 민원 서버 제작 <br> Thymeleaf기반 SpringBoot 프론트엔드 제작 <br> |
+ | 앱 어플리케이션 개발 <br> SpringBoot 민원 서버 제작 <br> Thymeleaf기반 SpringBoot 프론트엔드 제작 <br> 
 
 ## 3. 개요
 - **프로젝트 이름**: 민원고
