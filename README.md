@@ -5,14 +5,11 @@
 
 ## 2. 팀원 소개 (한국 폴리텍 대학교 서울 정수 캠퍼스 인공지능 소프트웨어과)
 
-| 이름     | 역할                  | 기술 스택                                                                                                                                       | 소개                                           | 
-|:---------|:---------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------|
-| [유승호](https://github.com/00seungho)   | 팀원              | ![Python](https://img.shields.io/badge/python-3776AB?style=flat-square&logo=python&logoColor=white) <br> ![Flask](https://img.shields.io/badge/flask-000000?style=flat-square&logo=flask&logoColor=white) <br> ![PyTorch](https://img.shields.io/badge/pytorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white) <br> ![Spring Boot](https://img.shields.io/badge/spring--boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white) | Flask AI 관제서버 담당 <br> Azure 커스텀 비전 훈련 담당 <br> SpringBoot RestAPI 통신 구축 <br> Azure 기반 서버 구축 <br> 프로젝트 아키텍쳐 설계|
+| 이름     | 역할                | 기술 스택                                                                                                                                           | 소개                                                                                                      | 
+|:---------|:--------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------|
+| [나예은](https://github.com/yeeun03030) | 팀원                | ![Spring Boot](https://img.shields.io/badge/spring--boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white) <br> ![Kotlin](https://img.shields.io/badge/kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white) <br> ![Android Studio](https://img.shields.io/badge/android--studio-3DDC84?style=flat-square&logo=android-studio&logoColor=white) | 앱 개발 담당 <br> Spring Boot 기반 민원 서버 제작 <br> Thymeleaf를 활용한 Spring Boot 프론트엔드 구현 |
+| [유승호](https://github.com/00seungho) | 팀원                | ![Python](https://img.shields.io/badge/python-3776AB?style=flat-square&logo=python&logoColor=white) <br> ![Flask](https://img.shields.io/badge/flask-000000?style=flat-square&logo=flask&logoColor=white) <br> ![PyTorch](https://img.shields.io/badge/pytorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white) <br> ![Spring Boot](https://img.shields.io/badge/spring--boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white) | Flask 기반 AI 관제 서버 개발 <br> Azure 커스텀 비전 모델 훈련 <br> Spring Boot REST API 통신 구축 <br> Azure 서버 환경 설정 <br> 프로젝트 아키텍처 설계 |
 
-| [나예은](https://github.com/yeeun03030)   | 팀원    | ![Spring Boot](https://img.shields.io/badge/spring--boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white)
- <br> ![Kotlin](https://img.shields.io/badge/kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
- <br> ![Android Studio](https://img.shields.io/badge/android--studio-3DDC84?style=flat-square&logo=android-studio&logoColor=white)
- | 앱 어플리케이션 개발 <br> SpringBoot 민원 서버 제작 <br> Thymeleaf기반 SpringBoot 프론트엔드 제작 <br> 
 
 ## 3. 개요
 - **프로젝트 이름**: 민원고
